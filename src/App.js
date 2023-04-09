@@ -1,63 +1,80 @@
 import React, { useMemo } from 'react'
 
 import { useState, useEffect } from "react";
+import DisplayLettersProper from './DisplayLettersProper';
 function App() {
+
+
+    const [myLetters, setMyLetters] = useState(randomizeArray(letterArray));
+    const [navState, setNavState] = useState(false);
+    const seasons = ["Spring", "Summer", "Autumn", "Winter"];
+
+    const [inputText, setInputText] = useState([]);
+    const count = useMemo(() => myLetters.filter((item) => item.state === states.Correct).length, [myLetters]);
     const countProcess = (myLetters) => {
         let count = myLetters.filter((item) => item.state === states.Correct).length;
         return count;
     }
-    const [myLetters, setMyLetters] = useState(randomizeArray(letterArray));
-    const [typedLetter, setTypedLetter] = useState([]);
-    const count = useMemo(() => myLetters.filter((item) => item.state === states.Correct).length, [myLetters]);
 
-    const setTypedLettertoState = (id, typedLetter) => {
-        setTypedLetter(
-            {
-                id: id,
-                typedLetter: typedLetter
-            }
-        )
-    }
+    const clearInput = (season) => {
+        // alert(inputText.event.target.value);
+        if (inputText.season === season) {
 
-    const checkLetter = (letter) => {
-
-
-        if (typedLetter.typedLetter === letter.englishLetter
-            && typedLetter.id === letter.id
-            && letter.state == states.UK
-        ) {
-
-            changeLetterStatus(letter, states.Correct);
-        } else {
-            changeLetterStatus(letter, states.Wrong);
+            inputText.event.target.value = "";
+            console.log(inputText)
+            // setInputText([])
+        }else{
+            let event = inputText.event;
+            setInputText({event,season})
         }
-
-
-    }
-
-
-    const changeLetterStatus = (letter, status) => {
-        setMyLetters(
-            myLetters.map((item) => {
-                return item.id === letter.id ? { ...item, state: status } : item
-            })
-        )
     }
     return (
         <>
-            <div>
-                <h1>Count is : {count}</h1>
+            {/* <div className=''>
+                <h2>Seasons of the year</h2>
+                <ul>
+                    {seasons.map((season) => (
+
+                        <div key={season}>
+                            <input onChange={(event) => { setInputText({ event, season }) }}
+                            />
+                            <button onClick={() => { clearInput(season) }}>empty</button>
+                        </div>
+
+                    ))}
+                </ul>
+            </div> */}
+
+
+
+            {/* <div className=''>
+                <h2>Seasons of the year</h2>
+                <ul>
+                    {seasons.map((season) => (
+
+                        <div key={season}>
+                            <input 
+                            />
+                            <button >empty</button>
+                        </div>
+
+                    ))}
+                </ul>
+            </div> */}
+            <div className=''>
+
+                <div className='sticky top-0 flex flex-row py-3 md:py-2 bg-topBarBg'>
+                    <h1 className='ml-5 text-xl font-semibold text-white'>Count is : {count}</h1>
+                    <button onClick={() => { window.location.reload(false) }} className='px-2 ml-5 text-white bg-blue-400 rounded-md'>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                </div>
+
+                <DisplayLettersProper myLetters={myLetters} setMyLetters={setMyLetters} states={states} />
+
             </div>
-            {
-                myLetters.map((item) => (
-                    <div key={item.id} className='mb-4 bg-red-500'>
-                        <h1>{item.jpLetter}</h1>
-                        <input type="text" onChange={(e) => { setTypedLettertoState(item.id, e.currentTarget.value) }} />
-                        <button onClick={() => { checkLetter(item) }} className='bg-blue-400'>Check</button>
-                        <h4>state : {item.state}</h4>
-                    </div>
-                ))
-            }
         </>
     )
 }
@@ -78,7 +95,10 @@ const states = {
     "UK": "UK",
     "Wrong": "Wrong"
 }
-
+const ColorPalette = {
+    "JPLetter": "text-white",
+    "StateLetter": "text-green-500 font-bold"
+}
 const letterArray = [
     {
         id: 1,
