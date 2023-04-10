@@ -1,43 +1,22 @@
-import "./styles.css";
-import { useState } from "react";
+import React from 'react'
+import React, { useMemo, useRef } from 'react'
+import { useState, useEffect } from "react";
+function App() {
+    const timerRef = useRef(null);
+    const sendMessage = (e) => {
+        e.preventDefault();
+        timerRef.current = setTimeout(() => alert('Hey ??'), 1000);
+    }
 
-export default function App() {
-  const seasons = ["Spring", "Summer", "Autumn", "Winter"];
-
-  const [inputValues, setInputValues] = useState(
-    new Array(seasons.length).fill("")
-  );
-
-  const handleInput = (index, value) => {
-    setInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = value;
-      return newValues;
-    });
-  };
-
-  const clearInput = (index) => {
-    setInputValues((prevValues) => {
-      const newValues = [...prevValues];
-      newValues[index] = "";
-      return newValues;
-    });
-  };
-
-  return (
-    <div className="">
-      <h2>Seasons of the year</h2>
-      <ul>
-        {seasons.map((season, index) => (
-          <div key={season}>
-            <input
-              value={inputValues[index]}
-              onChange={(e) => handleInput(index, e.target.value)}
-            />
-            <button onClick={() => clearInput(index)}>empty</button>
-          </div>
-        ))}
-      </ul>
-    </div>
-  );
+    useEffect(() => {
+        // Clear the interval when the component unmounts
+        return () => clearTimeout(timerRef.current);
+    }, []);
+    return (
+        <div>
+            <button onClick={sendMessage()}>Do</button>
+        </div>
+    )
 }
+
+export default App

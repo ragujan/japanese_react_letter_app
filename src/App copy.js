@@ -5,13 +5,13 @@ import DisplayLettersProper from './DisplayLettersProper';
 function App() {
 
 
-    let [countDown, setCountDown] = useState(0)
     const [myLetters, setMyLetters] = useState(randomizeArray(letterArray));
+    const [navState, setNavState] = useState(false);
     const [timeMode, setTimeMode] = useState(false);
-    let [time, setTime] = useState(0);
+    let [time, setTime] = useState(2);
     const seasons = ["Spring", "Summer", "Autumn", "Winter"];
 
-
+    const [inputText, setInputText] = useState([]);
     const count = useMemo(() => myLetters.filter((item) => item.state === states.Correct).length, [myLetters]);
     const wrongCount = useMemo(() => myLetters.filter((item) => item.state === states.Wrong).length)
     const countProcess = (myLetters) => {
@@ -19,37 +19,32 @@ function App() {
         return count;
     }
     // const [reduceTime, setReduceTime] = useState();
+    let timer = useRef(null);
+    const reduceTime = () => {
+        timer.current = setTimeout(() => {
 
 
-    const activateTime = () => {
-        setTime(10);
-        setTimeMode(true);
+            setTime(time - 1);
+
+        }, 1000)
 
     }
+    const activateTime = () => {
 
+        reduceTime()
 
-    useEffect(() => {
-        if (timeMode) {
-            // alert("bro")
-            let to = setTimeout(() => {
-                setTime(time - 1)
-                if (time == 1) {
-                    setTimeMode(false)
-                };
-            }, 1000)
-            return () => clearTimeout(to)
-        }
+        // setReduceTime(reduceTime);
 
-    },
-        [countDown, timeMode, time]
-    )
+    }
     useEffect(() => {
         if (time == 0) {
-            resetMyLetters();
+            setTime(10);
+            resetMyLetters()
+            console.log(timer)
+            return () => clearTimeout(timer.current)
+
         }
-    }, [time])
-
-
+    }, [])
     const showTime = () => {
         // let t = 00;
         let minute = Math.floor(time / 60);
@@ -57,9 +52,9 @@ function App() {
         let calcSeconds = () => {
             seconds = time - (Math.floor(time / 60)) * 60;
             if (seconds < 10) {
-                seconds = '0' + seconds;
+                seconds = '0'+seconds;
             }
-            if (seconds == 0) {
+            if (seconds ==0) {
                 seconds = '00';
             }
 
@@ -79,38 +74,46 @@ function App() {
             }
         )
     }
+    const clearInput = (season) => {
+        // alert(inputText.event.target.value);
+        if (inputText.season === season) {
 
+            inputText.event.target.value = "";
+            console.log(inputText)
+            // setInputText([])
+        } else {
+            let event = inputText.event;
+            setInputText({ event, season })
+        }
+    }
     return (
         <>
 
             <div className=''>
 
-                <div className='sticky top-0 flex flex-row items-center justify-between py-3 md:py-2 bg-topBarBg'>
-                    <div className='flex flex-row'>
-                        <button onClick={() => { resetMyLetters() }} className='px-2 ml-5 text-white bg-blue-400 rounded-md'>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
-                            </svg>
-                        </button>
-                        <h1 className='ml-4 text-xl font-semibold text-white'>Left : {letterArray.length - count}</h1>
-                        <h1 className='ml-5 text-xl font-semibold text-white '>Correct ones  : {count}</h1>
-                        <h1 className='ml-4 text-xl font-semibold text-white'>Wrong ones : {wrongCount}</h1>
-                    </div>
-                    <div className='flex flex-row items-center'>
-                        {
-                            timeMode ?
-                                <>
-                                    <button onClick={() => { }} className='px-2 py-1 mr-6 text-white bg-blue-400 rounded-md'>
-                                        {showTime()}
-                                    </button>
-                                </> :
-                                <>
-                                    <button onClick={() => { activateTime() }} className='px-2 py-1 mr-6 text-white bg-blue-400 rounded-md'>
-                                        time mode
-                                    </button>
-                                </>
-                        }
-                    </div>
+                <div className='sticky top-0 flex flex-row py-3 md:py-2 bg-topBarBg'>
+                    <h1 className='ml-5 text-xl font-semibold text-white'>Count is : {count}</h1>
+                    <button onClick={() => { resetMyLetters() }} className='px-2 ml-5 text-white bg-blue-400 rounded-md'>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                    <h1 className='ml-4 text-xl font-semibold text-white'>Left : {letterArray.length - count}</h1>
+                    <h1 className='ml-4 text-xl font-semibold text-white'>Wrong ones : {wrongCount}</h1>
+                    {
+                        timeMode ?
+                            <>
+                                <button onClick={activateTime()} className='px-2 ml-5 text-white bg-blue-400 rounded-md'>
+                                    {showTime()}
+                                </button>
+                            </> :
+                            <>
+                                <button onClick={() => { setTimeMode(true) }} className='px-2 ml-5 text-white bg-blue-400 rounded-md'>
+                                    time mode
+                                </button>
+                            </>
+                    }
+
                 </div>
 
                 <DisplayLettersProper myLetters={myLetters} setMyLetters={setMyLetters} states={states} />
