@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from "react";
 
-function DisplayLettersProper(props) {
+function DisplayLetters(props) {
 
     const [typedLetter, setTypedLetter] = useState([]);
     const [inputValues, setInputValues] = useState(
@@ -120,7 +120,7 @@ function DisplayLettersProper(props) {
     )
 }
 
-export default DisplayLettersProper
+export default DisplayLetters
 
 
 const states = {

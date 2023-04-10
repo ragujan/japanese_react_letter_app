@@ -1,7 +1,7 @@
 import React, { useMemo, useRef } from 'react'
 
 import { useState, useEffect } from "react";
-import DisplayLettersProper from './DisplayLettersProper';
+import DisplayLetters from './DisplayLetters';
 function App() {
 
 
@@ -9,16 +9,11 @@ function App() {
     const [myLetters, setMyLetters] = useState(randomizeArray(letterArray));
     const [timeMode, setTimeMode] = useState(false);
     let [time, setTime] = useState(0);
-    const seasons = ["Spring", "Summer", "Autumn", "Winter"];
 
 
     const count = useMemo(() => myLetters.filter((item) => item.state === states.Correct).length, [myLetters]);
     const wrongCount = useMemo(() => myLetters.filter((item) => item.state === states.Wrong).length)
-    const countProcess = (myLetters) => {
-        let count = myLetters.filter((item) => item.state === states.Correct).length;
-        return count;
-    }
-    // const [reduceTime, setReduceTime] = useState();
+
 
 
     const activateTime = () => {
@@ -30,7 +25,7 @@ function App() {
 
     useEffect(() => {
         if (timeMode) {
-            // alert("bro")
+     
             let to = setTimeout(() => {
                 setTime(time - 1)
                 if (time == 1) {
@@ -51,7 +46,7 @@ function App() {
 
 
     const showTime = () => {
-        // let t = 00;
+
         let minute = Math.floor(time / 60);
         let seconds = 0;
         let calcSeconds = () => {
@@ -113,7 +108,7 @@ function App() {
                     </div>
                 </div>
 
-                <DisplayLettersProper myLetters={myLetters} setMyLetters={setMyLetters} states={states} />
+                <DisplayLetters myLetters={myLetters} setMyLetters={setMyLetters} states={states} />
 
             </div>
         </>
